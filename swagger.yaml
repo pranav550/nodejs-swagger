@@ -1,0 +1,251 @@
+swagger: "2.0"
+info:
+  title: This is my swagger ui docs
+  description: This is my company documentation mad by me.
+  version: 1.0
+  contact: 
+    email: pranav@gmail.com
+  license:
+    name: Apache 2.0
+    url: "http://apache.org/"
+
+  servers:
+    - url: "http://localhost:4000"
+      description: This is my local server
+    - url: "http://company.com"
+      description: This is my company server
+
+schemes: [http, https]
+
+paths:
+#return a string
+  /string:
+    get:
+      summary: Return a String
+      description: It's just return a fake string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: string
+            example: "A fake String"
+        400:
+          description: User Error
+        500:
+          description: Internal Server Error
+
+#return a object
+  /user:
+    get:
+      summary: Return a Single Object
+      description: Return a object
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string 
+        400:
+          description: User Error
+        500:
+          description: Internal Server Error
+
+#Returning array of user
+
+  /users:
+    get:
+      summary: Return array of users
+      description: Return Array
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string 
+        400:
+          description: User Error
+        500:
+          description: Internal Server Error
+
+#Get Request with path id
+  /users/{userId}:
+    get:
+      summary: Returns a user by ID.
+      description: Returns the Specific User
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type : integer
+            format: int64
+      responses: 
+        '200':
+          description: OK
+          schema:
+            type: object
+            example: {name: syed}
+
+#Post json/body & Body required
+  # /create:
+  #   post:
+  #     summary: Adds a new user
+  #     produces:
+  #       - application/json
+  #     consumes:
+  #       - application/json
+  #     parameters:
+  #       - in: body
+  #         name: body
+  #         schema:
+  #           type: object
+  #           required:
+  #             - name
+  #             - id
+  #           properties:
+  #             id:
+  #               type: integer
+  #             name:
+  #               type: string
+  #     responses:
+  #       '200':
+  #         description: OK
+
+  #Defining Body Reference
+  /create:
+    post:
+      summary: Adds a new user
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          schema:
+           $ref: "#/components/schemas/User"
+      responses:
+        '200':
+          description: OK
+
+
+#Query
+#Get Query
+  /usersQuery:
+    get:
+      summary: Returns a user by ID.
+      description: Returns the Specific User
+      parameters:
+        - in: query
+          name: id
+          type: integer
+          enum: [1, 2, 3]
+          required: true
+        # - in: query
+        #   name: id
+        #   type: integer
+        #   enum: [1, 2]
+        #   required: true
+      responses: 
+        '200':
+          description: OK
+          schema:
+            type: object
+            example: {name: syed,id: 21}
+
+
+
+#File Upload Multiform Data
+  /upload:
+    post:
+      tags:
+        - Upload
+      summary: Upload Video/Image for Inferring
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData
+          name: file
+          type: file
+          required: true
+          description: The file to upload.
+        # - in: formData
+        #   name: app
+        #   type: string
+        #   required: true
+        #   description: Name of the model.
+        # - in: formData
+        #   name: id
+        #   type: string
+        #   required: true
+        #   description: Some random Id.
+      responses:
+        200:
+          description: Successful Response
+        400:
+          description: User Error
+        500:
+          description: Internal Server Error
+
+
+#In Headers
+  /strings:
+    get:
+      summary: Checks if the server is alive
+      parameters:
+        - in: header
+          name: X-Request-ID
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          description: Successful Response
+        400:
+          description: User Error
+        500:
+          description: Internal Server Error
+
+#Cokies
+  # /ping:
+  #   get:
+  #     summary: Checks if the server is alive
+  #     parameters:
+  #       - in: cookie
+  #         name: debug
+  #         schema:
+  #           type: integer
+  #           enum: [0, 1]
+  #           default: 0
+  #       - in: cookie
+  #         name: csrftoken
+  #         schema:
+  #           type: string
+
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - name
+        - id
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+
+
+
